@@ -18,11 +18,11 @@ const showChatWidget = () => {
 
     input.addEventListener('keydown', (event) => {
 
-        let randomMessage = messagesList[Math.floor(Math.random() * (messagesList.length - 0 + 1)) + 0]
+        let randomMessage = messagesList[Math.floor(Math.random() * messagesList.length)];
 
-        let time = new Date().toLocaleTimeString()
+        let time = new Date().toLocaleTimeString();
 
-        console.log(time)
+        console.log(time);
 
         if (event.keyCode === 13) {
             messages.innerHTML += `
