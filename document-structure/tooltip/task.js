@@ -1,19 +1,15 @@
-const showText = () => {
-    const elements = document.getElementsByClassName('has-tooltip')
+const hasTooltip = Array.from(document.querySelectorAll('.has-tooltip'));
+const tooltip = document.querySelector('.tooltip');
 
-    const arrElements = Array.from(elements)
-
-    let div = document.createElement('div');
-    div.classList.add('tooltip')
-
-    arrElements.forEach(el => {
-        el.addEventListener('click', (event) => {
-            event.preventDefault();
-            div.textContent = el.title
-            el.append(div)
-            div.classList.add('tooltip_active')
-        })
-    })
+hasTooltip.forEach(item => item.addEventListener('click', (e) => {
+    e.preventDefault();
+    const { top, left } = item.getBoundingClientRect() 
+    if(tooltip.textContent === e.currentTarget.title) { 
+    tooltip.classList.toggle('tooltip_active');
+} else {
+    tooltip.textContent = e.currentTarget.title;
+    tooltip.style.top = (top + 20 + 'px');
+    tooltip.style.left = (left + 'px');
+    tooltip.classList.add('tooltip_active');
 }
-
-showText()
+}));

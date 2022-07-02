@@ -1,36 +1,38 @@
-const addTask = () => {
-    const input = document.getElementById('task__input')
-    const tasksList = document.getElementsByClassName('tasks__list')[0]
+const tasksInput = document.getElementById('task__input');
+const tasksAdd = document.getElementById('tasks__add');
+const tasksList = document.getElementById('tasks__list');
 
-    input.addEventListener('keydown', (event) => {
-
-        let divTask = document.createElement('div')
-        divTask.classList.add('task')
-
-        let divTitleTask = document.createElement('div')
-        divTitleTask.classList.add('task__title')
-
-        let link = document.createElement('a')
-        link.setAttribute('href', '#')
-        link.classList.add('task__remove')
-        link.textContent = 'x';
-
-        if (event.keyCode === 13) {
-            event.preventDefault()
-            divTitleTask.textContent = event.target.value
-
-            tasksList.append(divTask);
-            divTask.append(divTitleTask);
-            divTask.append(link);
-
-            link.addEventListener('click', (event) => {
-                event.preventDefault();
-                divTask.remove();
-            })
-        }
-    })
-
-    console.log(input)
+const taskListAdd = (text) => {
+    tasksList.insertAdjacentHTML('beforeend', `<div class="task">
+        <div class="task__title">
+        ${text}
+        </div>
+        <a href="#" class="task__remove">&times;</a>
+    </div>`);
+    tasksInput.value = '';
+    const task = Array.from(document.querySelectorAll('.task'));
+    const taskRemove = Array.from(document.querySelectorAll('.task__remove'));
+    let taskId = task.length - 1;
+    taskRemove[taskId].addEventListener('click', (e) => {
+        e.preventDefault();
+        task[taskId].remove();
+    });
 }
 
-addTask()
+tasksAdd.addEventListener('click', (e) => {
+    e.preventDefault();
+    if(e.currentTarget && tasksInput.value.trim().length !== 0) {
+        taskListAdd(tasksInput.value);
+    } else if(e.currentTarget) {
+        tasksInput.value = '';
+    }
+});
+
+tasksInput.addEventListener('keyup', (e) => {
+    e.preventDefault();
+    if(e.key === 'Enter' && tasksInput.value.trim().length !== 0) {   
+        taskListAdd(tasksInput.value);
+    } else if(e.key === 'Enter') {
+        tasksInput.value = '';
+    }
+});

@@ -1,62 +1,37 @@
-const addItem = () => {
-    const btnsDec = document.getElementsByClassName('product__quantity-control_dec');
-    const btnsInc = document.getElementsByClassName('product__quantity-control_inc');
+const product = Array.from(document.querySelectorAll('.product'));
+const cartProducts = document.querySelector('.cart__products');
+const productAdd = Array.from(document.querySelectorAll('.product__add'));
+const productImage = Array.from(document.querySelectorAll('.product__image'));
+let index;
 
-    const btnAddToCart = document.getElementsByClassName('product__add')
-
-    const cart = document.getElementsByClassName('cart__products')[0]
-
-    Array.from(btnsDec).forEach(btn => {
-        btn.addEventListener('click', () => {
-            if (btn.nextElementSibling.textContent.trim() === '1') {
-                return
-            }
-            btn.nextElementSibling.textContent -= 1
-        })
-    })
-
-    Array.from(btnsInc).forEach(btn => {
-        btn.addEventListener('click', () => {
-            btn.previousElementSibling.textContent = +btn.previousElementSibling.textContent + 1
-        })
-    })
-
-    Array.from(btnAddToCart).forEach(btn => {
-        btn.addEventListener('click', (event) => {
-            const card = btn.closest('.product');
-
-            let count = card.getElementsByClassName('product__quantity-value')[0].textContent;
-
-            let src = card.getElementsByClassName('product__image')[0].getAttribute('src')
-
-            let newCard = card.cloneNode(false);
-            newCard.classList.remove('product')
-            newCard.classList.add('cart__product')
-            const div = document.createElement('div');
-            const img = document.createElement('img');
-
-            div.classList.add('cart__product-count');
-            div.textContent = count;
-
-            img.setAttribute('src', src);
-            img.classList.add('cart__product-image');
-
-            newCard.append(div);
-            newCard.append(img);
-
-
-            let cartItems = document.getElementsByClassName('cart__product')
-
-            if (Array.from(cartItems).find(el => el.getAttribute('data-id') === newCard.getAttribute('data-id'))) {
-                let cartItem = Array.from(cartItems).find(el => el.getAttribute('data-id') === newCard.getAttribute('data-id'));
-                
-                cartItem.remove()
-            }
-
-            cart.append(newCard)
-        })
-    })
-
+productAdd.forEach(item => item.addEventListener('click', (e) => {
+    index = e.currentTarget.closest('.product').dataset.id;
+    const quantityValue = e.currentTarget.closest('.product').querySelector('.product__quantity-value');
+    const cartProduct = Array.from(cartProducts.querySelectorAll('.cart__product'));
+    const cartProductCount = Array.from(cartProducts.querySelectorAll('.cart__product-count'));
+    if(!cartProduct[index - 1]) {
+        cartProducts.insertAdjacentHTML('beforeend', `<div class="cart__product" data-id="${index}">
+        <img class="cart__product-image" src="${productImage[index - 1].currentSrc}">
+        <div class="cart__product-count">${quantityValue.textContent}</div>`);
+    } else {
+    cartProductCount[index - 1].textContent = Number(cartProductCount[index - 1].textContent) + Number(quantityValue.textContent);
 }
+}));
 
-addItem()
+product.forEach(item => {
+    const productQuantityControl = Array.from(item.querySelectorAll('.product__quantity-control'));
+    const productQuantityValue = item.querySelector('.product__quantity-value');
+    productQuantityControl.forEach(quantity => {
+        const quantityControl = () => {
+            if(quantity.classList.contains('product__quantity-control_inc')) {
+                productQuantityValue.textContent = +productQuantityValue.textContent + 1;
+            } else if(quantity.classList.contains('product__quantity-control_dec')) {
+                productQuantityValue.textContent = +productQuantityValue.textContent - 1;
+            }
+            if(productQuantityValue.textContent <= 1) {
+        productQuantityValue.textContent = 1;
+    } 
+    }
+    quantity.addEventListener('click', quantityControl);
+});
+});
